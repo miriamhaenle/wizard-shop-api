@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import shoppingCartRoutes from './routes/shoppingCartRoutes.routes.js';
 import productRoutes from './routes/products.routes.js';
+import customerRoutes from './routes/customerRoutes.routes.js';
 
 const server = express();
 server.use(express.json());
@@ -17,7 +18,7 @@ server.get('/', (req, res) =>
 );
 
 server.use(shoppingCartRoutes);
-// server.use(customerRoutes);
+server.use(customerRoutes);
 server.use(productRoutes);
 
 const port = 4000;

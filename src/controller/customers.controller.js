@@ -1,4 +1,3 @@
-import { request } from 'express';
 import { Customer } from '../models/Customer.model.js';
 
 function getCustomers(req, res) {

@@ -1,59 +1,61 @@
 import ShoppingCart from '../models/ShoppingCart.model.js';
 import { Customer } from '../models/Customer.model.js';
+import { findCustomerCart } from '../lib/customerHelpers.js';
+import { calculateSum } from '../lib/calculations.js';
+import { findAll, findById, findAndUpdate } from '../lib/databaseHelpers.js';
 
 async function getShoppingCart(req, res) {
   const customerId = req.params.customerId;
 
-  const allCarts = await ShoppingCart.find();
-  const cart = allCarts.filter((cart) => cart.customer._id == customerId);
-
-  res.json(cart);
+  try {
+    const allCarts = await findAll(ShoppingCart);
+    const cart = findCustomerCart(allCarts, customerId);
+    res.json(cart);
+  } catch (error) {
+    res.json(error);
+  }
 }
 
 async function postShoppingCart(req, res) {
   const customerId = req.params.customerId;
-  const customer = await findCustomer(customerId);
-  const allCarts = await ShoppingCart.find();
+  const customer = await findById(Customer, customerId);
+  const allCarts = await findAll(ShoppingCart);
   const orderItems = req.body.orderItems;
   const orderSum = calculateSum(orderItems);
 
-  if (findCustomersCart(allCarts, customerId)) {
-    const existingCart = findCustomersCart(allCarts, customerId);
-
+  if (findCustomerCart(allCarts, customerId)) {
+    const existingCart = findCustomerCart(allCarts, customerId);
     existingCart.orderItems.push(orderItems);
     existingCart.orderSum += orderSum;
 
-    ShoppingCart.findByIdAndUpdate(existingCart._id, existingCart, {
-      new: true,
-    })
-      .then((updatedCart) => res.json(updatedCart))
-      .catch((error) => res.json(error));
+    try {
+      const updatedCart = await findAndUpdate(
+        ShoppingCart,
+        existingCart._id,
+        existingCart
+      );
+      res.json(updatedCart);
+    } catch (error) {
+      res.json(error);
+    }
+
+    // ShoppingCart.findByIdAndUpdate(existingCart._id, existingCart)
+    //   .then((updatedCart) => res.json(updatedCart))
+    //   .catch((error) => res.json(error));
   } else {
     const newShoppingCart = new ShoppingCart({
       customer: customer,
       orderItems: req.body.orderItems,
       orderSum: orderSum,
     });
-    newShoppingCart
-      .save()
-      .then((shoppingCart) => res.json(shoppingCart))
-      .catch((error) => res.json(error));
+
+    try {
+      const shoppingCart = await saveToDb(newShoppingCart);
+      res.json(shoppingCart);
+    } catch (error) {
+      res.json(error);
+    }
   }
 }
 
 export { getShoppingCart, postShoppingCart };
-
-async function findCustomer(customerId) {
-  return await Customer.findById(customerId);
-}
-
-function calculateSum(items) {
-  return items.reduce(
-    (sum, orderItem) => sum + orderItem.price * orderItem.amount,
-    0
-  );
-}
-
-function findCustomersCart(carts, customerId) {
-  return carts.find((cart) => cart.customer._id == customerId);
-}

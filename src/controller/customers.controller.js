@@ -1,28 +1,37 @@
 import { Customer } from '../models/Customer.model.js';
+import { findAll, findById, saveToDb } from '../lib/databaseHelpers.js';
 
-function getCustomers(req, res) {
-  Customer.find()
-    .then((customers) => res.json(customers))
-    .catch((error) => res.error);
+async function getCustomers(_, res) {
+  try {
+    const customer = await findAll(Customer);
+    res.json(customer);
+  } catch (error) {
+    res.json(error);
+  }
 }
 
-function getCustomer(req, res) {
+async function getCustomer(req, res) {
   const customerId = req.params.customerId;
-  Customer.findById(customerId)
-    .then((customer) => res.json(customer))
-    .catch((error) => res.json(error));
+  try {
+    const customer = await findById(Customer, customerId);
+    res.json(customer);
+  } catch (error) {
+    res.json(error);
+  }
 }
 
-function postCustomer(req, res) {
+async function postCustomer(req, res) {
   const newCustomer = new Customer({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
   });
-  newCustomer
-    .save()
-    .then(() => res.json('Customer was saved'))
-    .catch((error) => res.json(error));
+  try {
+    const customer = await saveToDb(newCustomer);
+    res.json(customer);
+  } catch (error) {
+    res.json(error);
+  }
 }
 
 export { getCustomers, postCustomer, getCustomer };

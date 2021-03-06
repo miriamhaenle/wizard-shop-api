@@ -25,6 +25,7 @@
       "get": {
         "tags": ["Products"],
         "summary": "Get all products from the database",
+        "description": "Returns all product items from the database in an array",
         "repsonses": {
           "200": {
             "description": "ok",
@@ -34,6 +35,7 @@
       },
       "post": {
         "tags": ["Products"],
+        "summary": "Add a new product",
         "description": "Create a new product in the database",
         "parameters": [
           {
@@ -46,9 +48,9 @@
         "produces": ["application/json"],
         "responses": {
           "200": {
-            "description": "New Product is created",
+            "description": "New Product was created",
             "schema": {
-              "$ref": "#/definitions/Product"
+              "$ref": "#/definitions/Products"
             }
           }
         }
@@ -62,6 +64,88 @@
           "200": {
             "description": "ok",
             "schema": "#/definitions/Products"
+          }
+        }
+      }
+    },
+    "/customers": {
+      "get": {
+        "tags": ["Customers"],
+        "summary": "Get all customers from the database",
+        "description": "Returns all customers from the database",
+        "repsonses": {
+          "200": {
+            "description": "ok",
+            "schema": "#/definitions/Customers"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Customers"],
+        "summary": "Post a new customer",
+        "description": "Create a new customer in the database",
+        "parameters": [
+          {
+            "name": "customer",
+            "in": "body",
+            "description": "Customer we want to create",
+            "schema": { "$ref": "#/definitions/Customers" }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "New customer was created",
+            "schema": {
+              "$ref": "#/definitions/Products"
+            }
+          }
+        }
+      }
+    },
+    "/customers/:customerId": {
+      "get": {
+        "tags": ["Customers"],
+        "summary": "Get a single customer",
+        "description": "Returns data of the customer related to the provided userId",
+        "repsonses": {
+          "200": {
+            "description": "ok",
+            "schema": "#/definitions/Customers"
+          }
+        }
+      }
+    },
+    "/shopping-cart/:customerId": {
+      "get": {
+        "tags": ["Shopping cart"],
+        "summary": "See shopping cart for a single user",
+        "description": "Returns the shopping cart for the user matched by provided userId",
+        "repsonses": {
+          "200": {
+            "description": "ok",
+            "schema": "#/definitions/ShoppingCart"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Shopping cart"],
+        "summary": "Update the shopping cart",
+        "description": "Updates an existing shopping cart based on the items send in the request body or creates a new one if no shopping cart exist for the user",
+        "parameters": [
+          {
+            "name": "shopping cart",
+            "in": "body",
+            "description": "Shopping cart we want to update",
+            "schema": { "$ref": "#/definitions/ShoppingCart" }
+          }
+        ],
+        "repsonses": {
+          "200": {
+            "description": "Shopping cart was updated",
+            "schema": {
+              "$ref": "#/definitions/ShoppingCart"
+            }
           }
         }
       }
@@ -83,6 +167,24 @@
         },
         "price": {
           "type": "Number"
+        }
+      }
+    },
+    "Customers": {
+      "required": ["firstName", "lastName", "email", "_id"],
+      "properties": {
+        "_id": {
+          "type": "String",
+          "uniqueItems": true
+        },
+        "firstName": {
+          "type": "String"
+        },
+        "lastName": {
+          "type": "String"
+        },
+        "email": {
+          "type": "String"
         }
       }
     }

@@ -1,0 +1,90 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "My Wizard Shop CRUD",
+    "description": "Ecommerce API",
+    "licencse": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:4000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Wizards",
+      "description": "API for wizards in the system"
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/products": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get all products from the database",
+        "repsonses": {
+          "200": {
+            "description": "ok",
+            "schema": "#/definitions/Products"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Products"],
+        "description": "Create a new product in the database",
+        "parameters": [
+          {
+            "name": "product",
+            "in": "body",
+            "description": "Product we want to create",
+            "schema": { "$ref": "#/definitions/Products" }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "New Product is created",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          }
+        }
+      }
+    },
+    "/products/:productId": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get a single product",
+        "repsonses": {
+          "200": {
+            "description": "ok",
+            "schema": "#/definitions/Products"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Products": {
+      "required": ["name", "category", "price", "_id"],
+      "properties": {
+        "_id": {
+          "type": "String",
+          "uniqueItems": true
+        },
+        "name": {
+          "type": "String"
+        },
+        "category": {
+          "type": "String"
+        },
+        "price": {
+          "type": "Number"
+        }
+      }
+    }
+  }
+}

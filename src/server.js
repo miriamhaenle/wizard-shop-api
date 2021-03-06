@@ -1,5 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import fs from 'fs';
+import swaggerUi from 'swagger-ui-express';
 import shoppingCartRoutes from './routes/shoppingCartRoutes.routes.js';
 import productRoutes from './routes/products.routes.js';
 import customerRoutes from './routes/customerRoutes.routes.js';
@@ -20,6 +22,15 @@ server.get('/', (req, res) =>
 server.use(shoppingCartRoutes);
 server.use(customerRoutes);
 server.use(productRoutes);
+
+fs.readFile('./swagger.json', (error, data) => {
+  if (error) {
+    console.error(error);
+  }
+  const swaggerDocument = JSON.parse(data);
+
+  server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+});
 
 const port = 4000;
 server.listen(port, () => console.log(`Server listens on port ${port}.`));

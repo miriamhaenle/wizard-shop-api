@@ -1,5 +1,5 @@
 import ShoppingCart from '../models/ShoppingCart.model.js';
-import { Customer } from '../models/Customer.model.js';
+import { Customer, customerSchema } from '../models/Customer.model.js';
 import { findCustomerCart } from '../lib/customerHelpers.js';
 import { calculateSum } from '../lib/calculations.js';
 import { findAll, findById, findAndUpdate } from '../lib/databaseHelpers.js';
@@ -38,10 +38,6 @@ async function postShoppingCart(req, res) {
     } catch (error) {
       res.json(error);
     }
-
-    // ShoppingCart.findByIdAndUpdate(existingCart._id, existingCart)
-    //   .then((updatedCart) => res.json(updatedCart))
-    //   .catch((error) => res.json(error));
   } else {
     const newShoppingCart = new ShoppingCart({
       customer: customer,

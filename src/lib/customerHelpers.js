@@ -1,4 +1,7 @@
-const findCustomerCart = (carts, customerId) =>
-  carts.find((cart) => cart.customer._id == customerId);
+import ShoppingCart from '../models/ShoppingCart.model.js';
+
+const findCustomerCart = (customerId) => {
+  return ShoppingCart.findOne({ customerId }).populate('orderItems.productId');
+};
 
 export { findCustomerCart };

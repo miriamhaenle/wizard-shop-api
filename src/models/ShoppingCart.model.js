@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const shoppingCartSchema = new mongoose.Schema({
-  customerId: { type: Schema.Types.ObjectID, ref: 'Customer' },
+  customerId: { type: Schema.Types.ObjectId, ref: 'Customer' },
   orderItems: [
     {
       productId: { type: Schema.Types.ObjectId, ref: 'Product' },
